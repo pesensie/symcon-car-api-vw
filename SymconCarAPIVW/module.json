@@ -1,11 +1,11 @@
 {
   "id": "{04D91793-F4BA-358A-EDE3-6300D776D2AD}",
-  "name": "symcon-car-api-vw",
+  "name": "SymconCarAPIVW",
   "type": 3,
   "vendor": "",
   "version": "0.1",
   "aliases": [
-    "symcon-car-api-vw"
+    "SymconCarAPIVW"
   ],
   "url": "https://github.com/pesensie/symcon-car-api-vw",
   "prefix": "scav",
