@@ -52,12 +52,25 @@ Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
 
 ## ❤️ Unterstützung
 
-Du nutzt das Modul und möchtest die Weiterentwicklung unterstützen?  
-Du kannst das Projekt auf folgende Weise fördern:
+Du möchtest die Weiterentwicklung unterstützen? Wir freuen uns über eine kleine Spende:
 
-- ⭐ Star auf GitHub setzen
-- 🧑‍💻 Mitentwickeln, Issues melden oder Verbesserungen vorschlagen
-- ☕ Freiwillige Spende via PayPal: [paypal.me/siegfriedpesendorfer](https://paypal.me/siegfriedpesendorfer)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://www.paypal.com/donate/?business=PR9P7V7RMFHFQ&no_recurring=0&item_name=Spende+als+Dankesch%C3%B6n+f%C3%BCr+die+Modulentwicklung+Symcon&currency_code=EUR" target="_blank" rel="noopener noreferrer">
+        <img src="imgs/paypal_logo.png" alt="Spenden mit PayPal" style="max-width: 300px;">
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://www.paypal.com/donate/?business=PR9P7V7RMFHFQ&no_recurring=0&item_name=Spende+als+Dankesch%C3%B6n+f%C3%BCr+die+Modulentwicklung+Symcon&currency_code=EUR" target="_blank" rel="noopener noreferrer">
+        <img src="imgs/paypal_qr.png" alt="QR-Code zur PayPal-Spende" style="max-width: 200px;">
+      </a>
+    </td>
+  </tr>
+</table>
+
+> ☕ Vielen Dank für deine Unterstützung!  
+> 📜 Dieses Modul bleibt selbstverständlich frei verfügbar und quelloffen.
 
 ---
 
