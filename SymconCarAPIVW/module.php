@@ -5,8 +5,8 @@ class SymconCarAPIVW extends IPSModule
     public function Create()
     {
         parent::Create();
-        $this->RegisterPropertyString('ClientId', '');
-        $this->RegisterPropertyString('ClientSecret', '');
+        $this->RegisterPropertyString('Username', '');
+        $this->RegisterPropertyString('Password', '');
     }
 
     public function ApplyChanges()
@@ -16,33 +16,35 @@ class SymconCarAPIVW extends IPSModule
 
     public function TestConnection()
     {
-        $clientId = $this->ReadPropertyString('ClientId');
-        $clientSecret = $this->ReadPropertyString('ClientSecret');
+        $username = $this->ReadPropertyString('Username');
+        $password = $this->ReadPropertyString('Password');
 
-        $token = $this->GetHighMobilityToken($clientId, $clientSecret);
+        $token = $this->LoginAndGetToken($username, $password);
 
         if ($token === false) {
-            $this->SendDebug('High Mobility', 'Verbindung fehlgeschlagen.', 0);
+            $this->SendDebug('WeConnect', 'Verbindung fehlgeschlagen.', 0);
             return;
         }
 
-        $this->SendDebug('High Mobility', 'Verbindung erfolgreich, Token erhalten.', 0);
+        $this->SendDebug('WeConnect', 'Verbindung erfolgreich, Token erhalten.', 0);
     }
 
-    private function GetHighMobilityToken($clientId, $clientSecret)
+    private function LoginAndGetToken($username, $password)
     {
-        $postFields = json_encode([
-            'client_id' => $clientId,
-            'client_secret' => $clientSecret,
-            'grant_type' => 'client_credentials'
+        $postFields = http_build_query([
+            'grant_type' => 'password',
+            'username' => $username,
+            'password' => $password,
+            'client_id' => 'a24e9f36-1160-4b9f-9d34-52d54ffb82ea',
+            'scope' => 'openid profile mbb dealers cars vin'
         ]);
 
-        $ch = curl_init('https://sandbox.api.high-mobility.com/v1/auth/access_token');
+        $ch = curl_init('https://identity.vwgroup.io/oidc/v1/token');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json'
+            'Content-Type: application/x-www-form-urlencoded'
         ]);
 
         $response = curl_exec($ch);
