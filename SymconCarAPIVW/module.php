@@ -5,8 +5,8 @@ class SymconCarAPIVW extends IPSModule
     public function Create()
     {
         parent::Create();
-        $this->RegisterPropertyString('Username', '');
-        $this->RegisterPropertyString('Password', '');
+        $this->RegisterPropertyString('ClientId', '');
+        $this->RegisterPropertyString('ClientSecret', '');
     }
 
     public function ApplyChanges()
@@ -16,43 +16,33 @@ class SymconCarAPIVW extends IPSModule
 
     public function TestConnection()
     {
-        $username = $this->ReadPropertyString('Username');
-        $password = $this->ReadPropertyString('Password');
+        $clientId = $this->ReadPropertyString('ClientId');
+        $clientSecret = $this->ReadPropertyString('ClientSecret');
 
-        $token = $this->LoginAndGetToken($username, $password);
+        $token = $this->GetHighMobilityToken($clientId, $clientSecret);
 
         if ($token === false) {
-            $this->SendDebug('Login', 'Verbindung fehlgeschlagen.', 0);
+            $this->SendDebug('High Mobility', 'Verbindung fehlgeschlagen.', 0);
             return;
         }
 
-        $this->SendDebug('Login', 'Verbindung erfolgreich, Token erhalten.', 0);
-
-        $vehicles = $this->GetVehicleList($token);
-
-        if (is_array($vehicles)) {
-            $this->SendDebug('Fahrzeugliste', print_r($vehicles, true), 0);
-        } else {
-            $this->SendDebug('Fahrzeugliste', 'Keine Daten erhalten oder ungültige Antwort.', 0);
-        }
+        $this->SendDebug('High Mobility', 'Verbindung erfolgreich, Token erhalten.', 0);
     }
 
-    private function LoginAndGetToken($username, $password)
+    private function GetHighMobilityToken($clientId, $clientSecret)
     {
-        $postFields = http_build_query([
-            'grant_type' => 'password',
-            'username' => $username,
-            'password' => $password,
-            'client_id' => 'a24e9f36-1160-4b9f-9d34-52d54ffb82ea',
-            'scope' => 'openid profile mbb dealers cars vin'
+        $postFields = json_encode([
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'grant_type' => 'client_credentials'
         ]);
 
-        $ch = curl_init('https://identity.vwgroup.io/oidc/v1/token');
+        $ch = curl_init('https://sandbox.api.high-mobility.com/v1/auth/access_token');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded'
+            'Content-Type: application/json'
         ]);
 
         $response = curl_exec($ch);
@@ -65,22 +55,5 @@ class SymconCarAPIVW extends IPSModule
         }
 
         return false;
-    }
-
-    private function GetVehicleList($accessToken)
-    {
-        $url = 'https://mal-1a.prd.eu.dp.vwg/connect/vehicles';
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Authorization: Bearer $accessToken",
-            'Accept: application/json'
-        ]);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        return json_decode($response, true);
     }
 }
