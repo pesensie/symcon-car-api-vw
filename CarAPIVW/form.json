@@ -13,6 +13,18 @@
           "type": "PasswordTextBox",
           "name": "Password",
           "caption": "Passwort"
+        },
+        {
+          "type": "Select",
+          "name": "Brand",
+          "caption": "Marke",
+          "options": [
+            { "caption": "Volkswagen", "value": "vw" },
+            { "caption": "Audi", "value": "audi" },
+            { "caption": "Škoda", "value": "skoda" },
+            { "caption": "Seat", "value": "seat" },
+            { "caption": "Cupra", "value": "cupra" }
+          ]
         }
       ]
     }
