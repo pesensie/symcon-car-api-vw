@@ -8,7 +8,7 @@
     "SymconCarAPIVW"
   ],
   "url": "https://github.com/pesensie/symcon-car-api-vw",
-  "prefix": "scav",
+  "prefix": "SCAV",
   "parentRequirements": [],
   "childRequirements": [],
   "implemented": []
