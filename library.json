@@ -1,0 +1,12 @@
+{
+    "id": "{855A8CC4-6A2B-0722-F852-35131794C679}",
+    "name": "symcon-car-api-vw",
+    "author": "Siegfried Pesendorfer",
+    "url": "https://github.com/pesensie/symcon-pv-wallbox-manager",
+    "compatibility": {
+        "version": "7.1"
+    },
+    "version": "0.1",
+    "build": 0,
+    "date": 0
+}
