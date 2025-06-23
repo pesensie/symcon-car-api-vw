@@ -1,11 +1,12 @@
 {
   "id": "{143F6F5D-971D-9E2F-40D5-80B614BC994A}",
+  "name": "Car API VW",
   "author": "Siegfried Pesendorfer",
   "url": "https://github.com/pesensie/symcon-car-api-vw",
   "version": "0.1",
   "modules": [
     {
-      "id": "{143F6F5D-971D-9E2F-40D5-80B614BC994A}",
+      "id": "{04D91793-F4BA-358A-EDE3-6300D776D2AD}",
       "name": "SymconCarAPIVW",
       "type": 3,
       "vendor": "",
