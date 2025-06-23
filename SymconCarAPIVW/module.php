@@ -53,9 +53,89 @@ class SymconCarAPIVW extends IPSModule
         $data = json_decode($response, true);
 
         if (isset($data['access_token'])) {
-            $this->SendDebug('✅ Login erfolgreich', 'Token: ' . substr($data['access_token'], 0, 40) . '...', 0);
+            $accessToken = $data['access_token'];
+            $this->SendDebug('✅ Login erfolgreich', 'Token: ' . substr($accessToken, 0, 40) . '...', 0);
+
+            // Token im Buffer speichern
+            $this->SetBuffer('AccessToken', $accessToken);
+
+            // Direkt Fahrzeugdaten abrufen
+            $this->FetchVehicleData($accessToken);
         } else {
             $this->SendDebug('❌ Login fehlgeschlagen', print_r($data, true), 0);
+        }
+    }
+
+    private function FetchVehicleData(string $accessToken)
+    {
+        $vin = $this->ReadPropertyString('VIN');
+        $brand = strtolower($this->ReadPropertyString('Brand'));
+        $baseUrl = $this->GetAPIBaseURL($brand);
+
+        // VIN automatisch erkennen, falls leer
+        if ($vin == '') {
+            $url = $baseUrl . '/vehicles';
+            $result = $this->SendAPIRequest($url, $accessToken);
+
+            if (isset($result['data'][0]['vin'])) {
+                $vin = $result['data'][0]['vin'];
+                $this->SendDebug('🌟 VIN erkannt', $vin, 0);
+            } else {
+                $this->SendDebug('❌ Keine Fahrzeuge gefunden', print_r($result, true), 0);
+                return;
+            }
+        }
+
+        // Fahrzeugstatus abrufen
+        $statusUrl = $baseUrl . "/vehicles/$vin/status";
+        $status = $this->SendAPIRequest($statusUrl, $accessToken);
+
+        if (isset($status['batteryStatus']['stateOfCharge'])) {
+            $soc = $status['batteryStatus']['stateOfCharge'];
+            $this->SendDebug('🔋 SoC', $soc . '%', 0);
+        }
+
+        if (isset($status['chargingStatus']['remainingRange']['value'])) {
+            $range = $status['chargingStatus']['remainingRange']['value'];
+            $this->SendDebug('🚗 Reichweite', $range . ' km', 0);
+        }
+
+        if (isset($status['chargingStatus']['chargingState'])) {
+            $chargingState = $status['chargingStatus']['chargingState'];
+            $this->SendDebug('🔌 Ladevorgang', $chargingState, 0);
+        }
+    }
+
+    private function SendAPIRequest(string $url, string $accessToken): array
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $accessToken",
+            "Accept: application/json",
+            "Content-Type: application/json"
+        ]);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($response, true);
+    }
+
+    private function GetAPIBaseURL(string $brand): string
+    {
+        switch ($brand) {
+            case 'audi':
+                return 'https://mal-1a.prd.eu.dp.audi.com/connect';
+            case 'skoda':
+                return 'https://mal-1a.prd.eu.dp.skoda-auto.com/connect';
+            case 'seat':
+            case 'cupra':
+                return 'https://mal-1a.prd.eu.dp.seat.com/connect';
+            case 'vw':
+            default:
+                return 'https://mal-1a.prd.eu.dp.vwg/connect';
         }
     }
 
@@ -76,4 +156,3 @@ class SymconCarAPIVW extends IPSModule
         }
     }
 }
-?>
