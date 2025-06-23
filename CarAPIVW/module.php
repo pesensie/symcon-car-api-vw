@@ -1,7 +1,7 @@
 
 <?php
 
-class SymconCarAPIVW extends IPSModule
+class CarAPIVW extends IPSModule
 {
     public function Create()
     {
