@@ -1,0 +1,45 @@
+{
+  "elements": [
+    {
+      "type": "ExpansionPanel",
+      "caption": "🔐 Zugangsdaten",
+      "items": [
+        {
+          "type": "ValidationTextBox",
+          "name": "Username",
+          "caption": "E-Mail / Benutzername"
+        },
+        {
+          "type": "PasswordTextBox",
+          "name": "Password",
+          "caption": "Passwort"
+        },
+        {
+          "type": "Select",
+          "name": "Brand",
+          "caption": "Fahrzeugmarke",
+          "options": [
+            { "caption": "Volkswagen", "value": "vw" },
+            { "caption": "Audi", "value": "audi" },
+            { "caption": "Skoda", "value": "skoda" },
+            { "caption": "Seat", "value": "seat" },
+            { "caption": "Cupra", "value": "cupra" }
+          ],
+          "default": "vw"
+        },
+        {
+          "type": "ValidationTextBox",
+          "name": "VIN",
+          "caption": "Fahrzeug-VIN (optional)"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Button",
+      "caption": "🚀 Verbindung testen",
+      "onClick": "TestConnection"
+    }
+  ]
+}
