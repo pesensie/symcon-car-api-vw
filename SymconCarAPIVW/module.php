@@ -28,10 +28,10 @@ class SymconCarAPIVW extends IPSModule
 
         $this->SendDebug('Login', 'Verbindung erfolgreich, Token erhalten.', 0);
 
-        $list = $this->SendAPIRequest('/garage', $token);
+        $vehicles = $this->GetVehicleList($token);
 
-        if (isset($list['children'])) {
-            $this->SendDebug('Fahrzeugliste', print_r($list['children'], true), 0);
+        if (is_array($vehicles)) {
+            $this->SendDebug('Fahrzeugliste', print_r($vehicles, true), 0);
         } else {
             $this->SendDebug('Fahrzeugliste', 'Keine Daten erhalten oder ungültige Antwort.', 0);
         }
@@ -39,18 +39,20 @@ class SymconCarAPIVW extends IPSModule
 
     private function LoginAndGetToken($username, $password)
     {
-        $postFields = json_encode([
+        $postFields = http_build_query([
+            'grant_type' => 'password',
             'username' => $username,
-            'password' => $password
+            'password' => $password,
+            'client_id' => 'a24e9f36-1160-4b9f-9d34-52d54ffb82ea',
+            'scope' => 'openid profile mbb dealers cars vin'
         ]);
 
-        $ch = curl_init('https://myvwid.apps.emea.vwapps.io/oidc/v1/token');
+        $ch = curl_init('https://identity.vwgroup.io/oidc/v1/token');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Accept: application/json'
+            'Content-Type: application/x-www-form-urlencoded'
         ]);
 
         $response = curl_exec($ch);
@@ -65,9 +67,9 @@ class SymconCarAPIVW extends IPSModule
         return false;
     }
 
-    private function SendAPIRequest($endpoint, $accessToken)
+    private function GetVehicleList($accessToken)
     {
-        $url = 'https://myvwid.apps.emea.vwapps.io/api/v2' . $endpoint;
+        $url = 'https://mal-1a.prd.eu.dp.vwg/connect/vehicles';
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
